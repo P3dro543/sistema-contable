@@ -1,0 +1,16 @@
+# Avance 1 y Contexto
+Sitios_Avance_2/
+
+# Documentos
+*.pdf
+*.txt
+
+# Scripts temporales
+read_pdfs.py
+fix_db.php
+
+# Entornos y Editores
+.vscode/
+.idea/
+.DS_Store
+*.sql

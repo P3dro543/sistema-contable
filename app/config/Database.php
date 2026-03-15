@@ -1,48 +1,91 @@
 <?php
-/**
- * Database.php
- * Singleton de conexión PDO.
- * Ajustar las constantes según el entorno.
- */
-class Database {
 
-    private static ?PDO $connection = null;
+class Database
+{
+    private $host = DB_HOST;
+    private $user = DB_USER;
+    private $pass = DB_PASS;
+    private $dbname = DB_NAME;
 
-    // ── Configuración ──────────────────────────────────────────────────
-    private static string $host     = 'tiusr15pl.cuc-carrera-ti.ac.cr';
-    private static string $dbname   = 'tiusr15pl_sis_grupo2';
-    private static string $username = 'Feli86ine';
-    private static string $password = 'Feli86ine';
-    private static string $charset  = 'utf8mb4';
-    // ───────────────────────────────────────────────────────────────────
+    private $dbh;
+    private $error;
 
-    private function __construct() {}
+    public function __construct()
+    {
+        // Set DSN
+        $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
+        $options = array(
+            PDO::ATTR_PERSISTENT => true,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        );
 
-    public static function getConnection(): PDO {
-        if (self::$connection === null) {
-            $dsn = sprintf(
-                'mysql:host=%s;dbname=%s;charset=%s',
-                self::$host,
-                self::$dbname,
-                self::$charset
-            );
+        // Create PDO instance
+        try {
+            $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
+            // Set charset
+            $this->dbh->exec("set names utf8");
+        } catch (PDOException $e) {
+            $this->error = $e->getMessage();
+            echo $this->error;
+        }
+    }
 
-            $opciones = [
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES   => false,
-            ];
+    // Prepare statement with query
+    public function query($sql)
+    {
+        $this->stmt = $this->dbh->prepare($sql);
+    }
 
-            try {
-                self::$connection = new PDO($dsn, self::$username, self::$password, $opciones);
-            } catch (PDOException $e) {
-                // No exponer detalles en producción
-                error_log('Error de conexión BD: ' . $e->getMessage());
-                http_response_code(500);
-                die(json_encode(['error' => 'Error de conexión con la base de datos.']));
+    // Bind values
+    public function bind($param, $value, $type = null)
+    {
+        if (is_null($type)) {
+            switch (true) {
+                case is_int($value):
+                    $type = PDO::PARAM_INT;
+                    break;
+                case is_bool($value):
+                    $type = PDO::PARAM_BOOL;
+                    break;
+                case is_null($value):
+                    $type = PDO::PARAM_NULL;
+                    break;
+                default:
+                    $type = PDO::PARAM_STR;
             }
         }
+        $this->stmt->bindValue($param, $value, $type);
+    }
 
-        return self::$connection;
+    // Execute the prepared statement
+    public function execute()
+    {
+        return $this->stmt->execute();
+    }
+
+    // Get result set as array of objects
+    public function resultSet()
+    {
+        $this->execute();
+        return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    // Get single record as object
+    public function single()
+    {
+        $this->execute();
+        return $this->stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    // Get row count
+    public function rowCount()
+    {
+        return $this->stmt->rowCount();
+    }
+
+    // Get last insert ID
+    public function lastInsertId()
+    {
+        return $this->dbh->lastInsertId();
     }
 }
