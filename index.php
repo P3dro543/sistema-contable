@@ -63,6 +63,11 @@ switch ($ruta) {
         break;
 
     // ── DIRECCIONES (AUX11) ──────────────────────────────────────────────
+    case 'mov_centro_costo':
+        include 'views/reportes/mov_centro_costo.php'; // Aquí incluís el reporte
+        break;
+    
+    
     case 'direcciones':
         (new DireccionController())->index();
         break;

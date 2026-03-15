@@ -156,10 +156,11 @@ $menuItems = [
         ['ruta' => 'cuentas',  'label' => 'Cuentas',  'icon' => 'bi-list-nested'],
         ['ruta' => 'periodos', 'label' => 'Períodos', 'icon' => 'bi-calendar3'],
     ]],
-    ['seccion' => 'REPORTES', 'items' => [
-        ['ruta' => 'reporte_tercero', 'label' => 'Por Tercero',      'icon' => 'bi-bar-chart'],
-        ['ruta' => 'reporte_cc',      'label' => 'Por Centro Costo', 'icon' => 'bi-bar-chart-line'],
-    ]],
+  // Cambiá esta parte en tu array $menuItems:
+['seccion' => 'REPORTES', 'items' => [
+    ['ruta' => 'rep_terceros', 'label' => 'Por Tercero', 'icon' => 'bi-bar-chart'],
+    ['ruta' => 'mov_centro_costo', 'label' => 'Por Centro Costo', 'icon' => 'bi-bar-chart-line'],
+]],
     ['seccion' => 'ADMINISTRACIÓN', 'items' => [
         ['ruta' => 'usuarios',  'label' => 'Usuarios',  'icon' => 'bi-person-gear'],
         ['ruta' => 'roles',     'label' => 'Roles',     'icon' => 'bi-shield'],

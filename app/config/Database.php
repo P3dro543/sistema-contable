@@ -9,10 +9,10 @@ class Database {
     private static ?PDO $connection = null;
 
     // ── Configuración ──────────────────────────────────────────────────
-    private static string $host     = 'localhost';
-    private static string $dbname   = 'sistema_contable';
-    private static string $username = 'root';
-    private static string $password = '1234';
+    private static string $host     = 'tiusr15pl.cuc-carrera-ti.ac.cr';
+    private static string $dbname   = 'tiusr15pl_sis_grupo2';
+    private static string $username = 'Feli86ine';
+    private static string $password = 'Feli86ine';
     private static string $charset  = 'utf8mb4';
     // ───────────────────────────────────────────────────────────────────
 
