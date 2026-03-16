@@ -26,7 +26,8 @@ $files = [
     '/app/models/Usuario.php',
     '/app/models/DireccionTercero.php',
     '/app/controllers/AuthController.php',
-    '/app/controllers/DireccionController.php'
+    '/app/controllers/DireccionController.php',
+    '/app/controllers/CentroCostoController.php'
 ];
 
 foreach ($files as $file) {
@@ -121,6 +122,43 @@ switch ($ruta) {
             exit;
         }
         (new DireccionController())->eliminar();
+        break;
+    
+    // ── CENTROS DE COSTO (AUX6) ─────────────────────────────────────────
+    case 'centros_costo':
+        (new CentroCostoController())->index();
+        break;
+
+    case 'centros_costo_crear':
+        (new CentroCostoController())->crear();
+        break;
+
+    case 'centros_costo_guardar':
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?ruta=centros_costo');
+            exit;
+        }
+        (new CentroCostoController())->guardar();
+        break;
+
+    case 'centros_costo_editar':
+        (new CentroCostoController())->editar();
+        break;
+
+    case 'centros_costo_actualizar':
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?ruta=centros_costo');
+            exit;
+        }
+        (new CentroCostoController())->actualizar();
+        break;
+
+    case 'centros_costo_eliminar':
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?ruta=centros_costo');
+            exit;
+        }
+        (new CentroCostoController())->eliminar();
         break;
 
     // ── 404 ──────────────────────────────────────────────────────────────

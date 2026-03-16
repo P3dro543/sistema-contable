@@ -253,7 +253,7 @@ function abrirModalProrrateo(idDetalle, monto, cuenta) {
     document.getElementById('montoTotalLinea').textContent = parseFloat(monto).toFixed(2);
     
     // Cargar distribución existente si la hay
-    fetch(`${BASE_URL}AsientosController/getProrrateoTercero/${idDetalle}`)
+    fetch(`${BASE_URL}ProrrateoTerceroController/obtener/${idDetalle}`)
         .then(response => response.json())
         .then(distribucionExistente => {
             document.getElementById('distribucionContainer').innerHTML = '';
@@ -350,9 +350,7 @@ function guardarProrrateo() {
         distribucion: distribucion
     };
     
-    // NOTA: Asumo que existe un endpoint similar para terceros
-    // Si el endpoint es diferente, cámbialo aquí
-    fetch(BASE_URL + 'TerceroController/guardarProrrateo', {
+    fetch(BASE_URL + 'ProrrateoTerceroController/guardar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

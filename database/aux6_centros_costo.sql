@@ -1,0 +1,10 @@
+-- AUX6: Tabla de centros de costo
+CREATE TABLE IF NOT EXISTS centros_costo (
+    id_centro_costo INT AUTO_INCREMENT PRIMARY KEY,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    nombre VARCHAR(120) NOT NULL,
+    descripcion VARCHAR(255) NULL,
+    estado TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP
+);
