@@ -1,5 +1,12 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine on
-    RewriteRule ^$ public/ [L]
-    RewriteRule (.*) public/$1 [L]
-</IfModule>
+Options -Indexes
+
+RewriteEngine On
+RewriteBase /sistema-contable/
+
+# Redirección de URLs amigables
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?ruta=$1 [QSA,L]
+
+# Bloqueo de acceso directo a carpetas sensibles (Simplificado)
+RedirectMatch 403 ^/(config|models|controllers)/

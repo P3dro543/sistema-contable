@@ -1,4 +1,4 @@
-<?php require_once '../views/layout/header.php'; ?>
+<?php require_once 'views/layout/header.php'; ?>
 
 <div class="container mt-4">
     <h2>Administración de Terceross</h2>
@@ -98,4 +98,4 @@
     </nav>
 </div>
 
-<?php require_once '../views/layout/footer.php'; ?>
+<?php require_once 'views/layout/footer.php'; ?>

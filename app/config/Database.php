@@ -1,91 +1,73 @@
 <?php
+class Database {
+    private static ?PDO $connection = null;
+    private $stmt;
 
-class Database
-{
-    private $host = DB_HOST;
-    private $user = DB_USER;
-    private $pass = DB_PASS;
-    private $dbname = DB_NAME;
+    // ── Credenciales Localhost ──────────────────────────────────────────
+    private static string $host     = 'localhost';
+    private static string $dbname   = 'sistema_contable';
+    private static string $username = 'root';
+    private static string $password = '1234';
+    private static string $charset  = 'utf8mb4';
 
-    private $dbh;
-    private $error;
+    public function __construct() {}
 
-    public function __construct()
-    {
-        // Set DSN
-        $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
-        $options = array(
-            PDO::ATTR_PERSISTENT => true,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        );
-
-        // Create PDO instance
-        try {
-            $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
-            // Set charset
-            $this->dbh->exec("set names utf8");
-        } catch (PDOException $e) {
-            $this->error = $e->getMessage();
-            echo $this->error;
-        }
-    }
-
-    // Prepare statement with query
-    public function query($sql)
-    {
-        $this->stmt = $this->dbh->prepare($sql);
-    }
-
-    // Bind values
-    public function bind($param, $value, $type = null)
-    {
-        if (is_null($type)) {
-            switch (true) {
-                case is_int($value):
-                    $type = PDO::PARAM_INT;
-                    break;
-                case is_bool($value):
-                    $type = PDO::PARAM_BOOL;
-                    break;
-                case is_null($value):
-                    $type = PDO::PARAM_NULL;
-                    break;
-                default:
-                    $type = PDO::PARAM_STR;
+    // ESTO SE QUEDA IGUAL: Para que el Login y lo viejo no falle
+    public static function getConnection(): PDO {
+        if (self::$connection === null) {
+            $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s', self::$host, self::$dbname, self::$charset);
+            $opciones = [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, // Cambiado a OBJ para que el modelo funcione
+                PDO::ATTR_EMULATE_PREPARES   => false,
+            ];
+            try {
+                self::$connection = new PDO($dsn, self::$username, self::$password, $opciones);
+            } catch (PDOException $e) {
+                error_log('Error de conexión BD: ' . $e->getMessage());
+                die("Error de conexión con la base de datos.");
             }
+        }
+        return self::$connection;
+    }
+
+    // ── MÉTODOS EXTRA: Para que el modelo Tercero funcione ──────────────
+    
+    public function query($sql) {
+        $this->stmt = self::getConnection()->prepare($sql);
+    }
+
+    public function bind($param, $value, $type = null) {
+        if (is_null($type)) {
+            $type = match (true) {
+                is_int($value) => PDO::PARAM_INT,
+                is_bool($value) => PDO::PARAM_BOOL,
+                is_null($value) => PDO::PARAM_NULL,
+                default => PDO::PARAM_STR,
+            };
         }
         $this->stmt->bindValue($param, $value, $type);
     }
 
-    // Execute the prepared statement
-    public function execute()
-    {
+    public function execute() {
         return $this->stmt->execute();
     }
 
-    // Get result set as array of objects
-    public function resultSet()
-    {
+    public function resultSet() {
         $this->execute();
-        return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+        return $this->stmt->fetchAll();
     }
 
-    // Get single record as object
-    public function single()
-    {
+    public function single() {
         $this->execute();
-        return $this->stmt->fetch(PDO::FETCH_OBJ);
+        return $this->stmt->fetch();
     }
 
-    // Get row count
-    public function rowCount()
-    {
+    public function rowCount() {
         return $this->stmt->rowCount();
     }
 
-    // Get last insert ID
-    public function lastInsertId()
-    {
-        return $this->dbh->lastInsertId();
+    public function lastInsertId() {
+        return self::getConnection()->lastInsertId();
     }
 }

@@ -1,13 +1,13 @@
-<?php
+<?php require_once 'views/layout/header.php'; 
 
 class Tercero
 {
     private $db;
 
-    public function __construct()
-    {
-        $this->db = new Database;
-    }
+    public function __construct() {
+    // Creamos la instancia para poder usar ->query(), ->bind(), etc.
+    $this->db = new Database(); 
+}
 
     // Obtener todos los terceros (con paginacion y busqueda)
     public function getTercerosPaginados($limit, $offset, $search = '')
